@@ -1,17 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --color-primary: #10B981;
-  --color-primary-dark: #059669;
-  --color-secondary: #8B5CF6;
-  --color-secondary-dark: #7C3AED;
-  --color-accent: #F59E0B;
-  --color-positive: #10B981;
-  --color-negative: #F43F5E;
-  --color-surface: #FFFFFF;
-  --color-page: #F8FAFC;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --color-primary: #0d9f74;
+  --color-primary-dark: #097b58;
+  --color-secondary: #1f3f8f;
+  --color-secondary-dark: #142a61;
+  --color-accent: #f59f0a;
+  --color-positive: #0d9f74;
+  --color-negative: #e25169;
+  --color-surface: #ffffff;
+  --color-page: #f6f6f2;
 }
 
 html {
@@ -19,44 +21,75 @@ html {
 }
 
 body {
-  font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
-  background-color: #F8FAFC;
-  color: #0F172A;
+  font-family: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  background-color: #f6f6f2;
+  color: #142033;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Glass card utility */
-.glass-card {
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+* {
+  box-sizing: border-box;
 }
 
-/* Glass nav */
-.glass-nav {
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.6);
-}
-
-/* Gradient mesh background */
+/* Layout atmosphere */
 .mesh-bg {
   background:
-    radial-gradient(ellipse at 15% 15%, rgba(16, 185, 129, 0.06) 0%, transparent 55%),
-    radial-gradient(ellipse at 85% 20%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 80%, rgba(245, 158, 11, 0.03) 0%, transparent 45%),
-    #F8FAFC;
+    radial-gradient(1150px 520px at -6% -15%, rgba(13, 159, 116, 0.15), transparent 62%),
+    radial-gradient(860px 420px at 108% 5%, rgba(31, 63, 143, 0.13), transparent 58%),
+    radial-gradient(720px 420px at 45% 112%, rgba(245, 159, 10, 0.1), transparent 62%),
+    linear-gradient(180deg, #f8f8f4 0%, #f4f7fa 100%);
+  min-height: 100vh;
 }
 
-/* Tabular numbers for financial data */
+.mesh-bg::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: radial-gradient(circle at 1px 1px, #142033 1px, transparent 0);
+  background-size: 3px 3px;
+}
+
+.text-display {
+  font-family: "Fraunces", ui-serif, Georgia, serif;
+  letter-spacing: -0.02em;
+}
+
+/* Surface system */
+.glass-card {
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(150, 166, 193, 0.24);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 14px 40px rgba(16, 36, 61, 0.09);
+}
+
+.glass-nav {
+  background: rgba(248, 250, 252, 0.78);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(159, 177, 201, 0.24);
+}
+
+.surface-card {
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(149, 167, 194, 0.25);
+  box-shadow: 0 10px 26px rgba(12, 29, 53, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.surface-card-soft {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(149, 167, 194, 0.2);
+}
+
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }
 
-/* Fade-in animation */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -84,17 +117,15 @@ body {
   animation: fadeInUp 0.4s ease-out 0.24s both;
 }
 
-/* Pulse glow for CTA */
 @keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.3); }
-  50% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(13, 159, 116, 0.28); }
+  50% { box-shadow: 0 0 0 10px rgba(13, 159, 116, 0); }
 }
 
 .pulse-glow {
   animation: pulseGlow 2.5s ease-in-out infinite;
 }
 
-/* Skeleton shimmer */
 @keyframes shimmer {
   0% { background-position: -400px 0; }
   100% { background-position: 400px 0; }
@@ -104,4 +135,15 @@ body {
   background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
   background-size: 800px 100%;
   animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

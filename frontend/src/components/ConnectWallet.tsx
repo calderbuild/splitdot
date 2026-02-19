@@ -26,7 +26,7 @@ export default function ConnectWallet() {
       <button
         onClick={() => connect({ connector: connectors[0] })}
         disabled={isPending}
-        className="inline-flex items-center gap-2 bg-primary hover:bg-primary-dark text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors cursor-pointer"
+        className="inline-flex items-center gap-2 bg-primary hover:bg-primary-dark text-white text-sm font-semibold px-4 py-2 rounded-xl transition-all cursor-pointer shadow-md shadow-primary/25 hover:shadow-lg hover:shadow-primary/30"
       >
         <Wallet className="w-4 h-4" />
         {isPending ? "Connecting..." : "Connect"}
@@ -38,7 +38,7 @@ export default function ConnectWallet() {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen((o) => !o)}
-        className="inline-flex items-center gap-2 bg-white border border-slate-200 hover:bg-slate-50 text-sm font-medium px-3 py-2 rounded-xl transition-colors cursor-pointer"
+        className="inline-flex items-center gap-2 bg-white/90 border border-slate-200 hover:bg-white text-sm font-medium px-3 py-2 rounded-xl transition-colors cursor-pointer shadow-sm"
       >
         <MemberAvatar address={address!} size="sm" />
         <span className="font-mono text-slate-700 hidden sm:inline">
@@ -48,7 +48,7 @@ export default function ConnectWallet() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 bg-white rounded-xl border border-slate-200 shadow-lg py-1 z-30 min-w-[180px] animate-fade-in">
+        <div className="absolute right-0 top-full mt-2 bg-white rounded-xl border border-slate-200 shadow-xl py-1 z-30 min-w-[200px] animate-fade-in">
           <div className="px-3 py-2 border-b border-slate-100">
             <p className="text-xs text-slate-400">Connected</p>
             <p className="font-mono text-xs text-slate-700 mt-0.5">
@@ -60,7 +60,7 @@ export default function ConnectWallet() {
               disconnect();
               setOpen(false);
             }}
-            className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-negative hover:bg-slate-50 transition-colors cursor-pointer"
+            className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-negative hover:bg-rose-50 transition-colors cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
             Disconnect

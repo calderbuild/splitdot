@@ -82,7 +82,6 @@ export default function CreateGroup() {
   return (
     <Layout>
       <div className="max-w-lg mx-auto animate-fade-in">
-        {/* Header */}
         <div className="flex items-center gap-3 mb-8">
           <Link
             to="/"
@@ -90,11 +89,15 @@ export default function CreateGroup() {
           >
             <ArrowLeft className="w-4 h-4 text-slate-600" />
           </Link>
-          <h1 className="text-xl font-bold text-slate-900">Create Group</h1>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+              New workspace
+            </p>
+            <h1 className="text-2xl text-display font-bold text-slate-900">Create Group</h1>
+          </div>
         </div>
 
-        {/* Member Input */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 mb-4">
+        <div className="surface-card rounded-2xl p-6 mb-4">
           <label className="block text-sm font-semibold text-slate-700 mb-3">
             Add Members
           </label>
@@ -160,8 +163,7 @@ export default function CreateGroup() {
           </div>
         </div>
 
-        {/* Preview */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 mb-6">
+        <div className="surface-card rounded-2xl p-6 mb-6">
           <h3 className="text-sm font-semibold text-slate-700 mb-3">
             Group Preview
           </h3>
@@ -180,11 +182,10 @@ export default function CreateGroup() {
           </div>
         </div>
 
-        {/* Create Button */}
         <button
           onClick={handleCreate}
           disabled={isWorking || !isConnected}
-          className="w-full py-3.5 bg-primary hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-colors cursor-pointer flex items-center justify-center gap-2"
+          className="w-full py-3.5 bg-primary hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-md shadow-primary/20"
         >
           {isWorking ? (
             <>

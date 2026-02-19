@@ -27,7 +27,7 @@ function ExpenseCard({ groupId, index }: { groupId: number; index: number }) {
 
   if (!data) {
     return (
-      <div className="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-4">
+      <div className="surface-card rounded-xl p-4 flex items-center gap-4">
         <div className="skeleton h-10 w-10 rounded-full" />
         <div className="flex-1 space-y-2">
           <div className="skeleton h-4 w-40 rounded" />
@@ -41,7 +41,7 @@ function ExpenseCard({ groupId, index }: { groupId: number; index: number }) {
   const date = new Date(Number(timestamp) * 1000);
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-4 hover:shadow-sm transition-shadow animate-fade-in">
+    <div className="surface-card rounded-xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow animate-fade-in">
       <MemberAvatar address={payer} />
 
       <div className="flex-1 min-w-0">
@@ -79,7 +79,9 @@ function BalanceCard({
   return (
     <div
       className={`rounded-xl border p-3 flex items-center gap-3 ${
-        isYou ? "bg-primary/5 border-primary/15" : "bg-white border-slate-200"
+        isYou
+          ? "bg-primary/6 border-primary/20 shadow-sm shadow-primary/5"
+          : "bg-white/80 border-slate-200"
       }`}
     >
       <MemberAvatar address={memberAddr} size="sm" />
@@ -132,53 +134,63 @@ export default function GroupDetail() {
   const balanceMembers = balancesData ? balancesData[0] : [];
   const count = expenseCount ? Number(expenseCount) : 0;
   const expenseIds = Array.from({ length: count }, (_, i) => count - 1 - i);
+  const myIndex = address
+    ? balanceMembers.findIndex((m) => m.toLowerCase() === address.toLowerCase())
+    : -1;
+  const myBalance = myIndex >= 0 ? balances[myIndex] : 0n;
 
   return (
     <Layout>
       <div className="max-w-2xl mx-auto animate-fade-in">
-        {/* Header */}
-        <div className="flex items-center gap-3 mb-6">
-          <Link
-            to="/"
-            className="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-colors cursor-pointer"
-          >
-            <ArrowLeft className="w-4 h-4 text-slate-600" />
-          </Link>
-          <div className="flex-1">
-            <h1 className="text-xl font-bold text-slate-900">
-              Group #{groupId}
-            </h1>
-            <div className="flex items-center gap-2 mt-0.5">
-              <AvatarStack addresses={members} />
-              <span className="text-xs text-slate-400">
-                {members.length} members
-              </span>
+        <div className="surface-card rounded-3xl p-5 sm:p-6 mb-6">
+          <div className="flex items-start gap-3 mb-5">
+            <Link
+              to="/"
+              className="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-colors cursor-pointer"
+            >
+              <ArrowLeft className="w-4 h-4 text-slate-600" />
+            </Link>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 mb-1">
+                Group workspace
+              </p>
+              <h1 className="text-2xl text-display font-bold text-slate-900">
+                Group #{groupId}
+              </h1>
+              <div className="flex items-center gap-2 mt-1">
+                <AvatarStack addresses={members} />
+                <span className="text-xs text-slate-500">
+                  {members.length} members
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-2.5">
+            <Link
+              to={`/groups/${groupId}/expense`}
+              className="flex items-center justify-center gap-2 py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-colors cursor-pointer text-sm shadow-md shadow-primary/20"
+            >
+              <Plus className="w-4 h-4" />
+              Add Expense
+            </Link>
+            <Link
+              to={`/groups/${groupId}/settle`}
+              className="flex items-center justify-center gap-2 py-3 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold rounded-xl transition-colors cursor-pointer text-sm"
+            >
+              <ArrowRightLeft className="w-4 h-4" />
+              Settle Up
+            </Link>
+            <div className="surface-card-soft rounded-xl px-4 py-3 text-center sm:text-left">
+              <p className="text-[11px] uppercase tracking-[0.12em] text-slate-500">Your Net</p>
+              <BalanceDisplay balance={myBalance} size="sm" />
             </div>
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex gap-3 mb-6 animate-fade-in-delay-1">
-          <Link
-            to={`/groups/${groupId}/expense`}
-            className="flex-1 flex items-center justify-center gap-2 py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-colors cursor-pointer text-sm"
-          >
-            <Plus className="w-4 h-4" />
-            Add Expense
-          </Link>
-          <Link
-            to={`/groups/${groupId}/settle`}
-            className="flex-1 flex items-center justify-center gap-2 py-3 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold rounded-xl transition-colors cursor-pointer text-sm"
-          >
-            <ArrowRightLeft className="w-4 h-4" />
-            Settle Up
-          </Link>
-        </div>
-
-        {/* Balances */}
         {balanceMembers.length > 0 && (
-          <div className="mb-6 animate-fade-in-delay-2">
-            <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">
+          <div className="mb-6 animate-fade-in-delay-2 surface-card rounded-2xl p-4 sm:p-5">
+            <h2 className="text-sm font-semibold text-slate-600 uppercase tracking-[0.13em] mb-3">
               Balances
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -197,9 +209,8 @@ export default function GroupDetail() {
           </div>
         )}
 
-        {/* Expenses */}
         <div className="animate-fade-in-delay-3">
-          <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">
+          <h2 className="text-sm font-semibold text-slate-600 uppercase tracking-[0.13em] mb-3">
             Expenses
           </h2>
 

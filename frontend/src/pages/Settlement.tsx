@@ -111,7 +111,7 @@ function SettlementRow({
     approvePending || approveConfirming || settlePending || settleConfirming;
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-4 animate-fade-in">
+    <div className="surface-card rounded-xl p-4 animate-fade-in">
       <div className="flex items-center gap-3">
         {/* From */}
         <div className="flex items-center gap-2 min-w-0">
@@ -217,7 +217,6 @@ export default function SettlementPage() {
   return (
     <Layout>
       <div className="max-w-lg mx-auto animate-fade-in">
-        {/* Header */}
         <div className="flex items-center gap-3 mb-8">
           <Link
             to={`/groups/${groupId}`}
@@ -226,8 +225,8 @@ export default function SettlementPage() {
             <ArrowLeft className="w-4 h-4 text-slate-600" />
           </Link>
           <div>
-            <h1 className="text-xl font-bold text-slate-900">Settle Up</h1>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <h1 className="text-2xl text-display font-bold text-slate-900">Settle Up</h1>
+            <p className="text-xs text-slate-500 mt-0.5">
               Group #{groupId} - USDC settlement
             </p>
           </div>
@@ -241,19 +240,17 @@ export default function SettlementPage() {
           />
         ) : (
           <>
-            {/* Settlement Summary */}
             <div className="glass-card rounded-2xl p-5 mb-6">
-              <p className="text-sm text-slate-500 mb-1">Optimized transfers</p>
-              <p className="text-2xl font-bold text-slate-900">
+              <p className="text-sm text-slate-600 mb-1">Optimized transfers</p>
+              <p className="text-2xl text-display font-bold text-slate-900">
                 {settlements.length} payment
                 {settlements.length !== 1 ? "s" : ""}
               </p>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-slate-500 mt-1">
                 Net settlement minimizes the number of transfers needed
               </p>
             </div>
 
-            {/* Settlement Rows */}
             <div className="space-y-3 mb-6">
               {settlements.map((s, i) => (
                 <SettlementRow
@@ -269,7 +266,7 @@ export default function SettlementPage() {
             <button
               onClick={handleSettleAll}
               disabled={isSettlingAll}
-              className="w-full py-3.5 bg-secondary hover:bg-secondary-dark disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-colors cursor-pointer flex items-center justify-center gap-2"
+              className="w-full py-3.5 bg-secondary hover:bg-secondary-dark disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-md shadow-secondary/20"
             >
               {isSettlingAll ? (
                 <>
