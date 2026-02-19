@@ -17,7 +17,6 @@ import {
   Upload,
   Sparkles,
   X,
-  ImageIcon,
 } from "lucide-react";
 import Layout from "../components/Layout";
 import MemberAvatar from "../components/MemberAvatar";

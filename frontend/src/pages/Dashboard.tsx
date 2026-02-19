@@ -7,7 +7,6 @@ import { AvatarStack } from "../components/MemberAvatar";
 import EmptyState from "../components/EmptyState";
 import { SkeletonCard } from "../components/Skeleton";
 import { CONTRACTS, GroupLedgerABI } from "../contracts";
-import { formatBalance } from "../lib/utils";
 
 const ledgerAddress = CONTRACTS.GroupLedger as `0x${string}`;
 
@@ -75,7 +74,7 @@ function GroupCard({ groupId }: { groupId: number }) {
 }
 
 export default function Dashboard() {
-  const { isConnected, address } = useAccount();
+  const { isConnected } = useAccount();
 
   const { data: groupCount, isLoading } = useReadContract({
     address: ledgerAddress,
