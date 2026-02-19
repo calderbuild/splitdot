@@ -1,0 +1,39 @@
+# Dependencies
+node_modules
+
+# Environment
+.env
+.env.local
+
+# Hardhat
+cache
+artifacts
+typechain-types
+ignition/deployments
+coverage
+coverage.json
+
+# Frontend build
+frontend/dist
+frontend/dist-ssr
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor
+.vscode
+.idea
+*.sw?
+.DS_Store
+
+# Playwright MCP
+.playwright-mcp
+
+# Temp screenshots
+*.png
+!docs/**/*.png
+
+# Claude
+.claude
+docs/plans
