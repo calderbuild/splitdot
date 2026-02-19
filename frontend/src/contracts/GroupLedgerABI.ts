@@ -1,0 +1,177 @@
+export const GroupLedgerABI = [
+  {
+    anonymous: false,
+    inputs: [{ indexed: true, internalType: "uint256", name: "groupId", type: "uint256" }],
+    name: "BalancesUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "uint256", name: "groupId", type: "uint256" },
+      { indexed: true, internalType: "uint256", name: "expenseIndex", type: "uint256" },
+      { indexed: true, internalType: "address", name: "payer", type: "address" },
+      { indexed: false, internalType: "uint256", name: "amount", type: "uint256" },
+      { indexed: false, internalType: "string", name: "description", type: "string" },
+    ],
+    name: "ExpenseAdded",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "uint256", name: "groupId", type: "uint256" },
+      { indexed: true, internalType: "address", name: "creator", type: "address" },
+      { indexed: false, internalType: "address[]", name: "members", type: "address[]" },
+    ],
+    name: "GroupCreated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "uint256", name: "groupId", type: "uint256" },
+      { indexed: true, internalType: "address", name: "member", type: "address" },
+    ],
+    name: "MemberAdded",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "uint256", name: "groupId", type: "uint256" },
+      { indexed: true, internalType: "address", name: "member", type: "address" },
+    ],
+    name: "MemberRemoved",
+    type: "event",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "groupId", type: "uint256" },
+      { internalType: "uint256", name: "amount", type: "uint256" },
+      { internalType: "string", name: "description", type: "string" },
+      { internalType: "string", name: "category", type: "string" },
+      {
+        components: [
+          { internalType: "address", name: "member", type: "address" },
+          { internalType: "uint256", name: "amount", type: "uint256" },
+        ],
+        internalType: "struct GroupLedger.Split[]",
+        name: "splits",
+        type: "tuple[]",
+      },
+    ],
+    name: "addExpense",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "groupId", type: "uint256" },
+      { internalType: "address", name: "member", type: "address" },
+    ],
+    name: "addMember",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address[]", name: "members", type: "address[]" }],
+    name: "createGroup",
+    outputs: [{ internalType: "uint256", name: "groupId", type: "uint256" }],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "groupId", type: "uint256" },
+      { internalType: "address", name: "member", type: "address" },
+    ],
+    name: "getBalance",
+    outputs: [{ internalType: "int256", name: "", type: "int256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "uint256", name: "groupId", type: "uint256" }],
+    name: "getBalances",
+    outputs: [
+      { internalType: "address[]", name: "members", type: "address[]" },
+      { internalType: "int256[]", name: "balances", type: "int256[]" },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "groupId", type: "uint256" },
+      { internalType: "uint256", name: "index", type: "uint256" },
+    ],
+    name: "getExpense",
+    outputs: [
+      { internalType: "address", name: "payer", type: "address" },
+      { internalType: "uint256", name: "amount", type: "uint256" },
+      { internalType: "string", name: "description", type: "string" },
+      { internalType: "string", name: "category", type: "string" },
+      { internalType: "uint256", name: "timestamp", type: "uint256" },
+      { internalType: "address[]", name: "splitMembers", type: "address[]" },
+      { internalType: "uint256[]", name: "splitAmounts", type: "uint256[]" },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "uint256", name: "groupId", type: "uint256" }],
+    name: "getExpenseCount",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "uint256", name: "groupId", type: "uint256" }],
+    name: "getGroup",
+    outputs: [
+      { internalType: "address", name: "creator", type: "address" },
+      { internalType: "address[]", name: "members", type: "address[]" },
+      { internalType: "bool", name: "active", type: "bool" },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "uint256", name: "groupId", type: "uint256" }],
+    name: "getMembers",
+    outputs: [{ internalType: "address[]", name: "", type: "address[]" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "groupCount",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "", type: "uint256" },
+      { internalType: "address", name: "", type: "address" },
+    ],
+    name: "isMember",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "groupId", type: "uint256" },
+      { internalType: "address", name: "member", type: "address" },
+      { internalType: "int256", name: "adjustment", type: "int256" },
+    ],
+    name: "resetBalance",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+] as const;

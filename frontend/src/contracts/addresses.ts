@@ -1,0 +1,5 @@
+export const CONTRACTS = {
+  MockUSDC: "0x46028eec7e121C573f2Df3F865b1F5706b5B9c35",
+  GroupLedger: "0x4fbD3a48AE0C49d5c023059Ed4eb22E3674723CB",
+  Settlement: "0xc75542854D9f17c569465d36cA9a7E1A73e8bb31",
+} as const;
