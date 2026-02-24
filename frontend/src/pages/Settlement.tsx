@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   useAccount,
@@ -5,12 +6,14 @@ import {
   useWriteContract,
   useWaitForTransactionReceipt,
 } from "wagmi";
+import { parseUnits } from "viem";
 import {
   ArrowLeft,
   ArrowRight,
   CheckCircle,
   Loader2,
   Handshake,
+  Coins,
 } from "lucide-react";
 import Layout from "../components/Layout";
 import MemberAvatar from "../components/MemberAvatar";
@@ -32,10 +35,12 @@ function SettlementRow({
   settlement,
   userAddress,
   groupId,
+  onSettled,
 }: {
   settlement: SettlementType;
   userAddress: string | undefined;
   groupId: number;
+  onSettled?: () => void;
 }) {
   const { addToast } = useToast();
   const isDebtor =
@@ -71,6 +76,10 @@ function SettlementRow({
 
   const { isLoading: settleConfirming, isSuccess: settleSuccess } =
     useWaitForTransactionReceipt({ hash: settleHash });
+
+  useEffect(() => {
+    if (settleSuccess && onSettled) onSettled();
+  }, [settleSuccess]);
 
   function handleApprove() {
     approveWrite(
@@ -168,13 +177,81 @@ function SettlementRow({
   );
 }
 
+function MintUSDCButton() {
+  const { address } = useAccount();
+  const { addToast } = useToast();
+  const {
+    writeContract: mintWrite,
+    data: mintHash,
+    isPending: mintPending,
+  } = useWriteContract();
+
+  const { isLoading: mintConfirming, isSuccess: mintSuccess } =
+    useWaitForTransactionReceipt({ hash: mintHash });
+
+  function handleMint() {
+    if (!address) return;
+    mintWrite(
+      {
+        address: usdcAddress,
+        abi: MockUSDCABI,
+        functionName: "mint",
+        args: [address, parseUnits("1000", 6)],
+      },
+      {
+        onError: (err) => addToast("error", `Mint failed: ${err.message}`),
+        onSuccess: () => addToast("success", "1000 Test USDC minted!"),
+      }
+    );
+  }
+
+  const isMinting = mintPending || mintConfirming;
+
+  return (
+    <div className="surface-card rounded-2xl p-4 mb-6">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Coins className="w-4 h-4 text-secondary" />
+          <div>
+            <p className="text-sm font-semibold text-slate-700">
+              Need test USDC?
+            </p>
+            <p className="text-xs text-slate-400">
+              Testnet only - free test tokens
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={handleMint}
+          disabled={isMinting || mintSuccess}
+          className="text-xs font-semibold text-white bg-secondary hover:bg-secondary-dark disabled:opacity-50 disabled:cursor-not-allowed px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5"
+        >
+          {isMinting ? (
+            <>
+              <Loader2 className="w-3 h-3 animate-spin" />
+              Minting...
+            </>
+          ) : mintSuccess ? (
+            <>
+              <CheckCircle className="w-3 h-3" />
+              Minted
+            </>
+          ) : (
+            "Mint 1000 USDC"
+          )}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function SettlementPage() {
   const { id } = useParams<{ id: string }>();
   const groupId = Number(id);
   const { address } = useAccount();
   const { addToast } = useToast();
 
-  const { data: balancesData } = useReadContract({
+  const { data: balancesData, refetch: refetchBalances } = useReadContract({
     address: ledgerAddress,
     abi: GroupLedgerABI,
     functionName: "getBalances",
@@ -192,9 +269,12 @@ export default function SettlementPage() {
     isPending: settleAllPending,
   } = useWriteContract();
 
-  const { isLoading: settleAllConfirming } = useWaitForTransactionReceipt({
-    hash: settleAllHash,
-  });
+  const { isLoading: settleAllConfirming, isSuccess: settleAllSuccess } =
+    useWaitForTransactionReceipt({ hash: settleAllHash });
+
+  useEffect(() => {
+    if (settleAllSuccess) refetchBalances();
+  }, [settleAllSuccess]);
 
   function handleSettleAll() {
     settleAllWrite(
@@ -251,6 +331,8 @@ export default function SettlementPage() {
               </p>
             </div>
 
+            <MintUSDCButton />
+
             <div className="space-y-3 mb-6">
               {settlements.map((s, i) => (
                 <SettlementRow
@@ -258,6 +340,7 @@ export default function SettlementPage() {
                   settlement={s}
                   userAddress={address}
                   groupId={groupId}
+                  onSettled={() => refetchBalances()}
                 />
               ))}
             </div>

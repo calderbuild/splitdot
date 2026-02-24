@@ -1,7 +1,35 @@
 import { type ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Split, Sparkles } from "lucide-react";
+import { useAccount, useChainId, useSwitchChain } from "wagmi";
+import { Split, Sparkles, AlertTriangle } from "lucide-react";
 import ConnectWallet from "./ConnectWallet";
+
+const POLKADOT_HUB_CHAIN_ID = 420420417;
+
+function WrongNetworkBanner() {
+  const { isConnected } = useAccount();
+  const chainId = useChainId();
+  const { switchChain } = useSwitchChain();
+
+  if (!isConnected || chainId === POLKADOT_HUB_CHAIN_ID) return null;
+
+  return (
+    <div className="bg-amber-50 border-b border-amber-200 px-4 py-2.5">
+      <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2 text-sm text-amber-800">
+          <AlertTriangle className="w-4 h-4 shrink-0" />
+          <span>Please switch to Polkadot Hub Testnet to use SplitDot</span>
+        </div>
+        <button
+          onClick={() => switchChain({ chainId: POLKADOT_HUB_CHAIN_ID })}
+          className="text-xs font-semibold text-white bg-amber-600 hover:bg-amber-700 px-3 py-1 rounded-lg transition-colors cursor-pointer shrink-0"
+        >
+          Switch Network
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function Layout({ children }: { children: ReactNode }) {
   const location = useLocation();
@@ -9,6 +37,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen mesh-bg">
+      <WrongNetworkBanner />
       <nav className="glass-nav sticky top-0 z-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
           <Link to="/" className="flex items-center gap-3 cursor-pointer group min-w-0">
