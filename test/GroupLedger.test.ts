@@ -268,6 +268,54 @@ describe("SplitDot", function () {
         expect(balances[ownerIdx]).to.equal(toUSDC(20));
       });
     });
+
+    describe("access control", function () {
+      it("should set owner to deployer", async function () {
+        expect(await ledger.owner()).to.equal(owner.address);
+      });
+
+      it("should set settlement contract", async function () {
+        expect(await ledger.settlementContract()).to.equal(
+          await settlement.getAddress()
+        );
+      });
+
+      it("should reject setSettlementContract from non-owner", async function () {
+        await expect(
+          ledger.connect(alice).setSettlementContract(bob.address)
+        ).to.be.revertedWith("Only owner");
+      });
+
+      it("should reject setSettlementContract called twice", async function () {
+        // Already set in beforeEach
+        await expect(
+          ledger.setSettlementContract(bob.address)
+        ).to.be.revertedWith("Already set");
+      });
+
+      it("should reject setSettlementContract with zero address", async function () {
+        // Deploy a fresh ledger to test zero address
+        const FreshLedger = await ethers.getContractFactory("GroupLedger");
+        const freshLedger = await FreshLedger.deploy();
+        await expect(
+          freshLedger.setSettlementContract(ethers.ZeroAddress)
+        ).to.be.revertedWith("Invalid address");
+      });
+
+      it("should reject resetBalance from unauthorized caller", async function () {
+        await ledger.createGroup([alice.address]);
+        await expect(
+          ledger.connect(alice).resetBalance(0, alice.address, 100)
+        ).to.be.revertedWith("Only settlement contract");
+      });
+
+      it("should reject resetBalance from owner (not settlement)", async function () {
+        await ledger.createGroup([alice.address]);
+        await expect(
+          ledger.resetBalance(0, alice.address, 100)
+        ).to.be.revertedWith("Only settlement contract");
+      });
+    });
   });
 
   describe("Settlement", function () {
@@ -308,6 +356,35 @@ describe("SplitDot", function () {
         await expect(
           settlement.connect(outsider).settleWith(0, owner.address, toUSDC(10))
         ).to.be.revertedWith("Sender not in group");
+      });
+
+      it("should reject overpayment (amount exceeds debt)", async function () {
+        const settlementAddr = await settlement.getAddress();
+        // Alice owes $10 but tries to pay $50
+        await usdc.connect(alice).approve(settlementAddr, toUSDC(50));
+        await expect(
+          settlement.connect(alice).settleWith(0, owner.address, toUSDC(50))
+        ).to.be.revertedWith("Amount exceeds debt");
+      });
+
+      it("should reject settlement when sender has no debt", async function () {
+        // Owner has positive balance (+20), so cannot settle
+        const settlementAddr = await settlement.getAddress();
+        await usdc.connect(owner).approve(settlementAddr, toUSDC(10));
+        await expect(
+          settlement.connect(owner).settleWith(0, alice.address, toUSDC(10))
+        ).to.be.revertedWith("Sender has no debt");
+      });
+
+      it("should allow partial settlement", async function () {
+        const settlementAddr = await settlement.getAddress();
+        // Alice owes $10, pays $5
+        await usdc.connect(alice).approve(settlementAddr, toUSDC(5));
+        await settlement.connect(alice).settleWith(0, owner.address, toUSDC(5));
+
+        // Alice still owes $5
+        expect(await ledger.getBalance(0, alice.address)).to.equal(-toUSDC(5));
+        expect(await ledger.getBalance(0, owner.address)).to.equal(toUSDC(15));
       });
     });
 
