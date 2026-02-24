@@ -32,6 +32,11 @@ contract Settlement {
         require(ledger.isMember(groupId, msg.sender), "Sender not in group");
         require(ledger.isMember(groupId, to), "Recipient not in group");
 
+        // Prevent overpayment: sender must have a debt, and amount cannot exceed it
+        int256 senderBalance = ledger.getBalance(groupId, msg.sender);
+        require(senderBalance < 0, "Sender has no debt");
+        require(amount <= uint256(-senderBalance), "Amount exceeds debt");
+
         // Transfer USDC from sender to recipient
         require(usdc.transferFrom(msg.sender, to, amount), "USDC transfer failed");
 

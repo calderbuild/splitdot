@@ -33,6 +33,9 @@ describe("SplitDot", function () {
       await ledger.getAddress()
     );
 
+    // Authorize Settlement contract to call GroupLedger.resetBalance
+    await ledger.setSettlementContract(await settlement.getAddress());
+
     // Mint USDC to test accounts
     await usdc.mint(alice.address, toUSDC(1000));
     await usdc.mint(bob.address, toUSDC(1000));

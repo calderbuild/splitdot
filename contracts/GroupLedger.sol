@@ -5,6 +5,9 @@ pragma solidity ^0.8.28;
 /// @notice Manages groups, expenses, and balance tracking.
 ///         Balances are stored as signed integers: positive = owed to you, negative = you owe.
 contract GroupLedger {
+    address public owner;
+    address public settlementContract;
+
     struct Group {
         address creator;
         address[] members;
@@ -54,6 +57,23 @@ contract GroupLedger {
         require(groupId < groupCount, "Group does not exist");
         require(_groups[groupId].active, "Group is not active");
         _;
+    }
+
+    modifier onlySettlement() {
+        require(msg.sender == settlementContract, "Only settlement contract");
+        _;
+    }
+
+    constructor() {
+        owner = msg.sender;
+    }
+
+    /// @notice Set the Settlement contract address (one-time only, owner only)
+    function setSettlementContract(address _settlement) external {
+        require(msg.sender == owner, "Only owner");
+        require(settlementContract == address(0), "Already set");
+        require(_settlement != address(0), "Invalid address");
+        settlementContract = _settlement;
     }
 
     /// @notice Create a new group. The caller is automatically added as a member.
@@ -215,10 +235,11 @@ contract GroupLedger {
     }
 
     /// @notice Reset a specific member's balance (called by Settlement contract after settling)
-    /// @dev Only callable by settlement contract or group creator for now
+    /// @dev Only callable by the authorized Settlement contract
     function resetBalance(uint256 groupId, address member, int256 adjustment)
         external
         groupExists(groupId)
+        onlySettlement
     {
         _balances[groupId][member] += adjustment;
         emit BalancesUpdated(groupId);

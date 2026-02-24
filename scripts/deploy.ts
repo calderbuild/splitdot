@@ -37,14 +37,20 @@ async function main() {
   const settlementAddr = await settlement.getAddress();
   console.log("Settlement deployed to:", settlementAddr);
 
+  // 4. Authorize Settlement contract to call GroupLedger.resetBalance
+  console.log("\n--- Authorizing Settlement contract ---");
+  const setTx = await ledger.setSettlementContract(settlementAddr);
+  await setTx.wait();
+  console.log("Settlement contract authorized on GroupLedger");
+
   // Summary
   console.log("\n========== Deployment Summary ==========");
   console.log("MockUSDC:     ", usdcAddr);
   console.log("GroupLedger:  ", ledgerAddr);
   console.log("Settlement:   ", settlementAddr);
-  console.log("Network:       Passet Hub Testnet");
-  console.log("Chain ID:      420420422");
-  console.log("Explorer:      https://blockscout-passet-hub.parity-testnet.parity.io/");
+  console.log("Network:       Polkadot Hub Testnet");
+  console.log("Chain ID:      420420417");
+  console.log("Explorer:      https://blockscout-testnet.polkadot.io/");
   console.log("=========================================");
 }
 
