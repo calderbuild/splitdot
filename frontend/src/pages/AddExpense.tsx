@@ -364,9 +364,15 @@ export default function AddExpense() {
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              maxLength={100}
               placeholder="Dinner at Ramen Shop"
               className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
             />
+            {description.length > 80 && (
+              <p className="text-xs text-slate-400 mt-1 text-right">
+                {description.length}/100
+              </p>
+            )}
           </div>
 
           <div>

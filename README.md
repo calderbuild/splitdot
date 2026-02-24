@@ -20,6 +20,29 @@ SplitDot brings group expense management on-chain with USDC stablecoin settlemen
 
 ## Architecture
 
+```mermaid
+graph TB
+    subgraph Frontend ["Frontend (React + Wagmi + Vite)"]
+        UI[Pages: Dashboard, Groups, Expenses, Settlement]
+        AI[AI Receipt Scanner]
+        Wallet[Wallet Connection via RainbowKit]
+    end
+
+    subgraph Chain ["Polkadot Hub EVM (Chain ID: 420420417)"]
+        GL[GroupLedger.sol<br/>Groups, Expenses, Balances]
+        ST[Settlement.sol<br/>Net Settlement + USDC Transfers]
+        USDC[MockUSDC.sol<br/>ERC-20 Stablecoin 6 decimals]
+    end
+
+    UI -->|Read/Write| GL
+    UI -->|Settle| ST
+    AI -->|Vision API| UI
+    Wallet -->|Sign Txs| Chain
+    ST -->|resetBalance| GL
+    ST -->|transferFrom| USDC
+    USDC -->|approve| ST
+```
+
 ```
 Frontend (React + Wagmi)
     |
@@ -37,9 +60,9 @@ Polkadot Hub EVM (Chain ID: 420420417)
 
 | Contract | Address | Description |
 |----------|---------|-------------|
-| GroupLedger | `0x4fbD3a48AE0C49d5c023059Ed4eb22E3674723CB` | Group creation, expense recording, balance tracking |
-| Settlement | `0xc75542854D9f17c569465d36cA9a7E1A73e8bb31` | Net settlement calculation and USDC transfer execution |
-| MockUSDC | `0x46028eec7e121C573f2Df3F865b1F5706b5B9c35` | Test USDC token with 6 decimals |
+| GroupLedger | `0xc1A1C0E28D5c4dD37888D0FB25e4ee65f84D9953` | Group creation, expense recording, balance tracking |
+| Settlement | `0x6e0610a475677A01C044D346F9C84451816B8fE9` | Net settlement calculation and USDC transfer execution |
+| MockUSDC | `0xd573F0803fc2349f243d13887dde2938a7374827` | Test USDC token with 6 decimals |
 
 All contracts deployed on **Polkadot Hub Testnet**.
 
@@ -156,6 +179,50 @@ frontend/
     App.tsx             # Router
     main.tsx            # Entry point with providers
 ```
+
+## Why Polkadot?
+
+- **Sub-second finality** -- Polkadot Hub provides near-instant transaction confirmations, critical for settlement UX
+- **Cross-chain messaging (XCM)** -- Future multi-chain settlement across parachains without bridges
+- **Low gas fees** -- Polkadot Hub testnet transactions cost fractions of a cent vs Ethereum L1
+- **Path to real USDC** -- Asset Hub parachain enables native stablecoin integration on mainnet
+- **Shared security** -- Polkadot's relay chain secures all parachains, including Hub EVM
+
+## Security
+
+- **Access control**: `GroupLedger.resetBalance()` restricted to the authorized Settlement contract via `onlySettlement` modifier. Owner can set the Settlement contract address exactly once.
+- **Overpayment protection**: `Settlement.settleWith()` validates that the payment amount does not exceed the sender's actual debt, preventing balance manipulation.
+- **AI API key**: The AI receipt scanner uses a client-side API key for demo simplicity. In production, this would be proxied through a backend to prevent key exposure.
+
+## Roadmap
+
+### Completed (Hackathon)
+
+- On-chain group ledger with expense tracking and balance management
+- AI receipt scanner (photo to structured data via Vision API)
+- Net settlement algorithm with USDC stablecoin transfers
+- Polished responsive frontend with wrong-network detection
+- 35 contract tests covering access control, overpayment protection, and settlement flows
+
+### Next Steps
+
+- Multi-chain settlement via XCM (Polkadot's cross-chain messaging)
+- Real USDC/USDT integration on Polkadot Hub mainnet
+- Group invitation links (share URL to join)
+- Spending analytics dashboard (charts by category/member)
+- Mobile PWA with camera-first expense flow
+- ENS/Polkadot identity resolution for member display names
+
+### Long-term Vision
+
+- Become the Splitwise of Web3 -- transparent, verifiable, cross-chain expense management
+- Polkadot ecosystem grant application for mainnet launch
+- Integration with Polkadot Hub DeFi protocols for yield on idle group funds
+
+## Live Demo
+
+- **App**: https://splitdot.vercel.app
+- **Explorer**: https://blockscout-testnet.polkadot.io
 
 ## License
 

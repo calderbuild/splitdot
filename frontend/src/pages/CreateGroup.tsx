@@ -184,7 +184,7 @@ export default function CreateGroup() {
 
         <button
           onClick={handleCreate}
-          disabled={isWorking || !isConnected}
+          disabled={isWorking || !isConnected || members.length === 0}
           className="w-full py-3.5 bg-primary hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-md shadow-primary/20"
         >
           {isWorking ? (
@@ -196,6 +196,12 @@ export default function CreateGroup() {
             "Create Group"
           )}
         </button>
+
+        {members.length === 0 && (
+          <p className="text-xs text-slate-400 text-center mt-2">
+            Add at least one other member to create a group
+          </p>
+        )}
       </div>
     </Layout>
   );
